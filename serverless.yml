@@ -1,0 +1,36 @@
+service: clear-cloudfront-cache
+
+frameworkVersion: '>=2.68.0'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  stage: produciton
+  region: ap-northeast-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "cloudfront:createInvalidation"
+      Resource:
+        - ${env:CLOUDFORNT_RESOUCE}
+
+package:
+  excludeDevDependencies: true
+  # exclude:
+  # include:
+
+functions:
+  execute:
+    handler: app/handler.execute
+    timeout: 30
+    memorySize: 128
+    environment:
+      CLOUDFRONT_ID: ${env:CLOUDFRONT_ID}
+    events:
+      - http:
+          path: '/'
+          method: post
+

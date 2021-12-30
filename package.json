@@ -1,0 +1,21 @@
+{
+  "name": "clear-cloudfront-cache",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "repository": "https://github.com/RyuyaIshibashi/clear-cloudfront-cache",
+  "author": "Ryuya Ishibashi",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint --no-fix .",
+    "lint:fix": "eslint .",
+    "deploy": "sls deploy --force"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1048.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "eslint": "^8.5.0",
+    "serverless": "^2.70.0"
+  }
+}

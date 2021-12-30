@@ -1,0 +1,66 @@
+version: 2.1
+
+executors:
+  default:
+    working_directory: ~/workspace
+    docker:
+      - image: cimg/node:14.18.2
+
+commands:
+  save_app_modules:
+    steps:
+      - save_cache:
+          paths:
+            - ~/workspace/node_modules
+          key: modules-{{ .Branch }}-{{ checksum "yarn.lock" }}-{{ checksum ".node-version" }}
+  restore_app_modules:
+    steps:
+      - restore_cache:
+          key: modules-{{ .Branch }}-{{ checksum "yarn.lock" }}-{{ checksum ".node-version" }}
+
+jobs:
+  install:
+    executor: default
+    steps:
+      - checkout
+      - restore_app_modules
+      - run:
+          name: Install app modules
+          command: yarn install --frozen-lockfile
+      - save_app_modules
+  lint:
+    executor: default
+    steps:
+      - checkout
+      - restore_app_modules
+      - run:
+          name: Lint
+          command: yarn lint
+  deploy:
+    executor: default
+    steps:
+      - checkout
+      - restore_app_modules
+      - deploy:
+          name: Deploy
+          command: yarn deploy
+
+workflows:
+  process:
+    jobs:
+      - install:
+          filters:
+            branches:
+              only: /master/
+      - lint:
+          requires:
+            - install
+          filters:
+            branches:
+              only: /master/
+      - deploy:
+          requires:
+            - lint
+          filters:
+            branches:
+              only: /master/
