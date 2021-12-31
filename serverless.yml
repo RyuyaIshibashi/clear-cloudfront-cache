@@ -19,8 +19,6 @@ provider:
 
 package:
   excludeDevDependencies: true
-  # exclude:
-  # include:
 
 functions:
   execute:
